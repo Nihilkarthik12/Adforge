@@ -4,6 +4,7 @@
 // Owns the single CreativeState via useHistory (undo/redo stack).
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import type { CanvasDef, CreativeState, Layer } from "@/lib/creative/types";
 import type { ShapeLayer, TextLayer } from "@/lib/creative/types";
 import {
@@ -24,6 +25,7 @@ import { LayersPanel } from "./LayersPanel";
 interface Props {
   initialState: CreativeState;
   title?: string;
+  projectId?: string;
   onSave?: (
     state: CreativeState,
     thumbnailDataUrl?: string,
@@ -31,7 +33,7 @@ interface Props {
   onRegenerateCopy?: (field: string) => Promise<string>;
 }
 
-export function Editor({ initialState, title = "Untitled", onSave, onRegenerateCopy }: Props) {
+export function Editor({ initialState, title = "Untitled", projectId, onSave, onRegenerateCopy }: Props) {
   const { state, setState, undo, redo, canUndo, canRedo } =
     useHistory(initialState);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -238,6 +240,15 @@ export function Editor({ initialState, title = "Untitled", onSave, onRegenerateC
       {/* Toolbar */}
       <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-2.5">
         <div className="flex items-center gap-3">
+          {/* Back to dashboard */}
+          <Link
+            href={projectId ? `/project/${projectId}/templates` : "/"}
+            className="flex items-center gap-1 rounded px-2 py-1 text-sm text-slate-500 hover:bg-slate-100"
+            title="Back to project"
+          >
+            ← Back
+          </Link>
+          <span className="text-slate-300">|</span>
           <span className="text-sm font-medium text-slate-700">{title}</span>
 
           {/* Undo / Redo */}

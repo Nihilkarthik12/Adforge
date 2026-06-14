@@ -127,6 +127,7 @@ export function EditorLoader({
     <Editor
       initialState={state}
       title={title}
+      projectId={projectId}
       onSave={handleSave}
       onRegenerateCopy={handleRegenerateCopy}
     />
