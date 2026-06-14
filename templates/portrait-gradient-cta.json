@@ -1,0 +1,88 @@
+{
+  "key": "portrait-gradient-cta",
+  "name": "Portrait Big CTA",
+  "category": "hero",
+  "aspectRatio": "4:5",
+  "industry": "saas-general",
+  "style": "bold-dark",
+  "canvas": { "width": 1080, "height": 1350, "background": "#0F172A" },
+  "layers": [
+    {
+      "id": "bg_panel",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0, "y": 0, "width": 1080, "height": 1350, "radius": 0, "rotation": 0,
+      "fill": "#0F172A",
+      "editable": true,
+      "bindsTo": "color_secondary"
+    },
+    {
+      "id": "bg_image",
+      "type": "image",
+      "x": 0, "y": 0, "width": 1080, "height": 1350, "rotation": 0,
+      "src": null,
+      "objectFit": "cover",
+      "editable": true
+    },
+    {
+      "id": "logo",
+      "type": "image",
+      "x": 80, "y": 90, "width": 200, "height": 64, "rotation": 0,
+      "src": null,
+      "objectFit": "contain",
+      "editable": true,
+      "bindsTo": "logo"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "x": 80, "y": 420, "width": 920, "height": 380, "rotation": 0,
+      "content": "Make the promise. Make it big.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 96,
+      "fontWeight": 800,
+      "color": "#FFFFFF",
+      "textAlign": "left",
+      "lineHeight": 1.08,
+      "editable": true,
+      "bindsTo": "headline"
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "x": 80, "y": 850, "width": 880, "height": 110, "rotation": 0,
+      "content": "Then earn it with one specific supporting line.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 38,
+      "fontWeight": 500,
+      "color": "#94A3B8",
+      "textAlign": "left",
+      "lineHeight": 1.3,
+      "editable": true,
+      "bindsTo": "subheadline"
+    },
+    {
+      "id": "cta_bg",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 80, "y": 1110, "width": 920, "height": 130, "radius": 20, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "cta_text",
+      "type": "text",
+      "x": 80, "y": 1150, "width": 920, "height": 56, "rotation": 0,
+      "content": "Start free today",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 38,
+      "fontWeight": 700,
+      "color": "#FFFFFF",
+      "textAlign": "center",
+      "lineHeight": 1.2,
+      "editable": true,
+      "bindsTo": "cta"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "key": "centered-statement",
+  "name": "Centered Statement",
+  "category": "hero",
+  "aspectRatio": "1:1",
+  "industry": "saas-general",
+  "style": "minimal-light",
+  "canvas": { "width": 1080, "height": 1080, "background": "#FFFFFF" },
+  "layers": [
+    {
+      "id": "logo",
+      "type": "image",
+      "x": 440, "y": 90, "width": 200, "height": 60, "rotation": 0,
+      "src": null,
+      "objectFit": "contain",
+      "editable": true,
+      "bindsTo": "logo"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "x": 90, "y": 330, "width": 900, "height": 260, "rotation": 0,
+      "content": "One clear statement that sells the outcome",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 76,
+      "fontWeight": 800,
+      "color": "#111111",
+      "textAlign": "center",
+      "lineHeight": 1.12,
+      "editable": true,
+      "bindsTo": "headline"
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "x": 150, "y": 620, "width": 780, "height": 100, "rotation": 0,
+      "content": "Back it up with a short, concrete supporting line.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 34,
+      "fontWeight": 500,
+      "color": "#64748B",
+      "textAlign": "center",
+      "lineHeight": 1.35,
+      "editable": true,
+      "bindsTo": "subheadline"
+    },
+    {
+      "id": "cta_bg",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 370, "y": 830, "width": 340, "height": 96, "radius": 48, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "cta_text",
+      "type": "text",
+      "x": 370, "y": 857, "width": 340, "height": 48, "rotation": 0,
+      "content": "Try it free",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 30,
+      "fontWeight": 600,
+      "color": "#FFFFFF",
+      "textAlign": "center",
+      "lineHeight": 1.2,
+      "editable": true,
+      "bindsTo": "cta"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "key": "instagram-story",
+  "name": "Instagram Story",
+  "category": "story",
+  "aspectRatio": "9:16",
+  "industry": "saas-general",
+  "style": "gradient-bold",
+  "canvas": { "width": 1080, "height": 1920, "background": "#0F172A" },
+  "layers": [
+    {
+      "id": "bg_image",
+      "type": "image",
+      "x": 0, "y": 0, "width": 1080, "height": 1920, "rotation": 0,
+      "src": null,
+      "objectFit": "cover",
+      "editable": true
+    },
+    {
+      "id": "top_gradient",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0, "y": 0, "width": 1080, "height": 600, "radius": 0, "rotation": 0,
+      "fill": "#1E40AF",
+      "editable": true,
+      "bindsTo": "color_secondary"
+    },
+    {
+      "id": "accent_circle",
+      "type": "shape",
+      "shape": "ellipse",
+      "x": 680, "y": -120, "width": 560, "height": 560, "radius": 0, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "logo",
+      "type": "image",
+      "x": 80, "y": 120, "width": 200, "height": 72, "rotation": 0,
+      "src": null,
+      "objectFit": "contain",
+      "editable": true,
+      "bindsTo": "logo"
+    },
+    {
+      "id": "tag_bg",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 80, "y": 520, "width": 220, "height": 52, "radius": 26, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "tag_text",
+      "type": "text",
+      "x": 80, "y": 534, "width": 220, "height": 28, "rotation": 0,
+      "content": "NEW FEATURE",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 22,
+      "fontWeight": 700,
+      "color": "#FFFFFF",
+      "textAlign": "center",
+      "lineHeight": 1.2,
+      "editable": true
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "x": 80, "y": 620, "width": 920, "height": 480, "rotation": 0,
+      "content": "Your big bold headline goes right here",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 96,
+      "fontWeight": 800,
+      "color": "#FFFFFF",
+      "textAlign": "left",
+      "lineHeight": 1.08,
+      "editable": true,
+      "bindsTo": "headline"
+    },
+    {
+      "id": "body",
+      "type": "text",
+      "x": 80, "y": 1160, "width": 920, "height": 200, "rotation": 0,
+      "content": "Supporting message that explains the value in one or two sentences.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 40,
+      "fontWeight": 400,
+      "color": "#94A3B8",
+      "textAlign": "left",
+      "lineHeight": 1.5,
+      "editable": true,
+      "bindsTo": "body"
+    },
+    {
+      "id": "divider",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 80, "y": 1400, "width": 920, "height": 2, "radius": 0, "rotation": 0,
+      "fill": "#334155",
+      "editable": true
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "x": 80, "y": 1440, "width": 700, "height": 120, "rotation": 0,
+      "content": "Built for B2B SaaS teams",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 36,
+      "fontWeight": 500,
+      "color": "#CBD5E1",
+      "textAlign": "left",
+      "lineHeight": 1.3,
+      "editable": true,
+      "bindsTo": "subheadline"
+    },
+    {
+      "id": "cta_bg",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 80, "y": 1720, "width": 920, "height": 120, "radius": 24, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "cta_text",
+      "type": "text",
+      "x": 80, "y": 1754, "width": 920, "height": 56, "rotation": 0,
+      "content": "Get started free",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 44,
+      "fontWeight": 700,
+      "color": "#FFFFFF",
+      "textAlign": "center",
+      "lineHeight": 1.2,
+      "editable": true,
+      "bindsTo": "cta"
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "key": "linkedin-horizontal",
+  "name": "LinkedIn Banner",
+  "category": "linkedin",
+  "aspectRatio": "1.91:1",
+  "industry": "saas-general",
+  "style": "clean-light",
+  "canvas": { "width": 1200, "height": 628, "background": "#FFFFFF" },
+  "layers": [
+    {
+      "id": "bg_image",
+      "type": "image",
+      "x": 0, "y": 0, "width": 1200, "height": 628, "rotation": 0,
+      "src": null,
+      "objectFit": "cover",
+      "editable": true
+    },
+    {
+      "id": "left_panel",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0, "y": 0, "width": 680, "height": 628, "radius": 0, "rotation": 0,
+      "fill": "#F8FAFC",
+      "editable": true
+    },
+    {
+      "id": "accent_bar",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0, "y": 0, "width": 8, "height": 628, "radius": 0, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "logo",
+      "type": "image",
+      "x": 52, "y": 48, "width": 160, "height": 52, "rotation": 0,
+      "src": null,
+      "objectFit": "contain",
+      "editable": true,
+      "bindsTo": "logo"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "x": 52, "y": 140, "width": 580, "height": 200, "rotation": 0,
+      "content": "Your headline goes right here",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 56,
+      "fontWeight": 800,
+      "color": "#0F172A",
+      "textAlign": "left",
+      "lineHeight": 1.1,
+      "editable": true,
+      "bindsTo": "headline"
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "x": 52, "y": 356, "width": 580, "height": 80, "rotation": 0,
+      "content": "Supporting message that builds on the headline.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 24,
+      "fontWeight": 400,
+      "color": "#475569",
+      "textAlign": "left",
+      "lineHeight": 1.4,
+      "editable": true,
+      "bindsTo": "subheadline"
+    },
+    {
+      "id": "cta_bg",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 52, "y": 480, "width": 260, "height": 72, "radius": 12, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "cta_text",
+      "type": "text",
+      "x": 52, "y": 498, "width": 260, "height": 40, "rotation": 0,
+      "content": "Get started",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 24,
+      "fontWeight": 600,
+      "color": "#FFFFFF",
+      "textAlign": "center",
+      "lineHeight": 1.2,
+      "editable": true,
+      "bindsTo": "cta"
+    },
+    {
+      "id": "right_circle",
+      "type": "shape",
+      "shape": "ellipse",
+      "x": 760, "y": 64, "width": 360, "height": 360, "radius": 0, "rotation": 0,
+      "fill": "#EFF6FF",
+      "editable": true
+    },
+    {
+      "id": "right_circle_inner",
+      "type": "shape",
+      "shape": "ellipse",
+      "x": 820, "y": 124, "width": 240, "height": 240, "radius": 0, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "body",
+      "type": "text",
+      "x": 720, "y": 470, "width": 430, "height": 100, "rotation": 0,
+      "content": "Trusted by leading B2B SaaS teams worldwide.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 20,
+      "fontWeight": 400,
+      "color": "#64748B",
+      "textAlign": "center",
+      "lineHeight": 1.4,
+      "editable": true,
+      "bindsTo": "body"
+    }
+  ]
+}

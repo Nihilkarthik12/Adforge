@@ -1,0 +1,94 @@
+{
+  "key": "problem-solution-split",
+  "name": "Problem / Solution Split",
+  "category": "comparison",
+  "aspectRatio": "1:1",
+  "industry": "saas-general",
+  "style": "split-contrast",
+  "canvas": { "width": 1080, "height": 1080, "background": "#FFFFFF" },
+  "layers": [
+    {
+      "id": "problem_bg",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 0, "y": 0, "width": 1080, "height": 520, "radius": 0, "rotation": 0,
+      "fill": "#0F172A",
+      "editable": true,
+      "bindsTo": "color_secondary"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "x": 80, "y": 150, "width": 920, "height": 240, "rotation": 0,
+      "content": "The painful way you do it today",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 68,
+      "fontWeight": 800,
+      "color": "#FFFFFF",
+      "textAlign": "left",
+      "lineHeight": 1.12,
+      "editable": true,
+      "bindsTo": "headline"
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "x": 80, "y": 580, "width": 920, "height": 90, "rotation": 0,
+      "content": "Here is the better way, in one sentence.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 40,
+      "fontWeight": 700,
+      "color": "#111111",
+      "textAlign": "left",
+      "lineHeight": 1.2,
+      "editable": true,
+      "bindsTo": "subheadline"
+    },
+    {
+      "id": "body",
+      "type": "text",
+      "x": 80, "y": 690, "width": 880, "height": 110, "rotation": 0,
+      "content": "One short proof line that makes the switch feel obvious.",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 30,
+      "fontWeight": 400,
+      "color": "#475569",
+      "textAlign": "left",
+      "lineHeight": 1.4,
+      "editable": true,
+      "bindsTo": "body"
+    },
+    {
+      "id": "logo",
+      "type": "image",
+      "x": 80, "y": 920, "width": 180, "height": 56, "rotation": 0,
+      "src": null,
+      "objectFit": "contain",
+      "editable": true,
+      "bindsTo": "logo"
+    },
+    {
+      "id": "cta_bg",
+      "type": "shape",
+      "shape": "rectangle",
+      "x": 700, "y": 900, "width": 300, "height": 92, "radius": 14, "rotation": 0,
+      "fill": "#2563EB",
+      "editable": true,
+      "bindsTo": "color_primary"
+    },
+    {
+      "id": "cta_text",
+      "type": "text",
+      "x": 700, "y": 926, "width": 300, "height": 46, "rotation": 0,
+      "content": "See how",
+      "fontFamily": "var(--font-inter), Arial, sans-serif",
+      "fontSize": 30,
+      "fontWeight": 600,
+      "color": "#FFFFFF",
+      "textAlign": "center",
+      "lineHeight": 1.2,
+      "editable": true,
+      "bindsTo": "cta"
+    }
+  ]
+}
