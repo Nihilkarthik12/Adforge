@@ -7,8 +7,10 @@ import { getSupabaseBrowser } from "@/lib/supabase/client";
 import {
   createProject,
   deleteProject,
+  listCreatives,
   listProjects,
   renameProject,
+  type Creative,
   type Project,
 } from "@/lib/db";
 
@@ -24,6 +26,7 @@ const CARD_GRADIENTS = [
 export function Dashboard() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[] | null>(null);
+  const [creativesByProject, setCreativesByProject] = useState<Record<string, Creative[]>>({});
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
@@ -35,7 +38,17 @@ export function Dashboard() {
 
   useEffect(() => {
     listProjects()
-      .then(setProjects)
+      .then(async (ps) => {
+        setProjects(ps);
+        // Load creatives for all projects in parallel
+        const entries = await Promise.all(
+          ps.map(async (p) => {
+            const creatives = await listCreatives(p.id).catch(() => []);
+            return [p.id, creatives] as [string, Creative[]];
+          })
+        );
+        setCreativesByProject(Object.fromEntries(entries));
+      })
       .catch((e) => setError(e instanceof Error ? e.message : String(e)));
   }, []);
 
@@ -124,13 +137,10 @@ export function Dashboard() {
       <main className="mx-auto max-w-6xl px-6 py-10">
 
         {/* ── Hero banner ── */}
-        <div className="relative mb-10 overflow-hidden rounded-2xl">
-          {/* Background gradient */}
+        <div className="relative mb-10 overflow-hidden rounded-2xl" style={{ animation: "fadeInUp 0.6s ease-out" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #3730a3 60%, #1e1b4b 100%)" }} />
-          {/* Dot grid */}
           <div className="pointer-events-none absolute inset-0"
             style={{ backgroundImage: "radial-gradient(circle, #ffffff0d 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-          {/* Glow accents */}
           <div className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full"
             style={{ background: "radial-gradient(circle, rgba(139,92,246,0.45) 0%, transparent 70%)" }} />
           <div className="pointer-events-none absolute -bottom-10 left-1/3 h-40 w-40 rounded-full"
@@ -160,10 +170,11 @@ export function Dashboard() {
 
         {/* ── New project form ── */}
         {showNew && (
-          <div className="mb-6 overflow-hidden rounded-2xl border border-indigo-200 bg-white shadow-md">
+          <div className="mb-6 overflow-hidden rounded-2xl border border-indigo-200 bg-white shadow-md"
+            style={{ animation: "scaleIn 0.3s ease-out" }}>
             <div className="border-b border-indigo-100 bg-indigo-50/60 px-6 py-4">
               <p className="text-sm font-semibold text-zinc-800">Name your project</p>
-              <p className="mt-0.5 text-xs text-zinc-500">Give it a descriptive name — you can always rename it later.</p>
+              <p className="mt-0.5 text-xs text-zinc-500">Give it a descriptive name — you can rename it later.</p>
             </div>
             <form onSubmit={handleCreate} className="flex gap-3 p-5">
               <input
@@ -202,7 +213,6 @@ export function Dashboard() {
           </div>
         )}
 
-        {/* ── Section label ── */}
         {projects !== null && projects.length > 0 && (
           <div className="mb-5 flex items-center justify-between">
             <p className="text-xs font-bold uppercase tracking-widest text-zinc-400">
@@ -215,31 +225,64 @@ export function Dashboard() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {projects?.map((p, i) => {
             const gradient = CARD_GRADIENTS[i % CARD_GRADIENTS.length];
+            const creatives = creativesByProject[p.id] ?? [];
+            const latestCreative = creatives[0] ?? null;
+            const hasThumbnail = Boolean(latestCreative?.thumbnail_url);
+
             return (
               <div
                 key={p.id}
                 className="group overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-zinc-200/70"
-                style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+                style={{
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+                  animation: `fadeInUp 0.45s ease-out ${0.05 + i * 0.06}s backwards`,
+                }}
               >
-                {/* Gradient header */}
-                <div className={`relative h-32 bg-gradient-to-br ${gradient} overflow-hidden`}>
-                  {/* Dot pattern */}
-                  <div className="absolute inset-0"
-                    style={{ backgroundImage: "radial-gradient(circle, #ffffff18 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
-                  {/* Hover sheen */}
-                  <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%)" }} />
-                  {/* Initials badge */}
-                  <div className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
-                    <span className="text-xl font-bold text-white">{p.name.charAt(0).toUpperCase()}</span>
+                {/* Card header — thumbnail if saved, gradient if not */}
+                {hasThumbnail ? (
+                  <Link
+                    href={`/project/${p.id}/editor/${latestCreative!.id}`}
+                    className="relative block h-40 overflow-hidden bg-zinc-100"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={latestCreative!.thumbnail_url!}
+                      alt="Creative preview"
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    {/* Overlay with "Open editor" on hover */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-200 group-hover:bg-black/30">
+                      <span className="flex items-center gap-1.5 rounded-lg bg-white/0 px-3 py-1.5 text-xs font-semibold text-white opacity-0 transition-all duration-200 group-hover:bg-white/20 group-hover:opacity-100 group-hover:backdrop-blur-sm">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        Open in editor
+                      </span>
+                    </div>
+                    {/* Creative count badge */}
+                    {creatives.length > 1 && (
+                      <span className="absolute right-3 top-3 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
+                        {creatives.length} creatives
+                      </span>
+                    )}
+                  </Link>
+                ) : (
+                  <div className={`relative h-32 bg-gradient-to-br ${gradient} overflow-hidden`}>
+                    <div className="absolute inset-0"
+                      style={{ backgroundImage: "radial-gradient(circle, #ffffff18 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
+                    <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%)" }} />
+                    <div className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/30 backdrop-blur-sm">
+                      <span className="text-xl font-bold text-white">{p.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <div className="absolute right-4 top-4 opacity-30">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+                      </svg>
+                    </div>
                   </div>
-                  {/* Top-right sparkle */}
-                  <div className="absolute right-4 top-4 opacity-30">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                      <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
-                    </svg>
-                  </div>
-                </div>
+                )}
 
                 <div className="p-5">
                   {renamingId === p.id ? (
@@ -258,19 +301,48 @@ export function Dashboard() {
                     <p className="text-sm font-semibold leading-snug text-zinc-900">{p.name}</p>
                   )}
                   <p className="mt-1 text-xs text-zinc-400">
-                    Created {new Date(p.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {creatives.length > 0
+                      ? `${creatives.length} creative${creatives.length !== 1 ? "s" : ""} · Last saved ${new Date(creatives[0].updated_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
+                      : `Created ${new Date(p.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
+                    }
                   </p>
 
                   <div className="mt-4 flex items-center gap-2">
-                    <Link
-                      href={`/project/${p.id}/input`}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-zinc-900 py-2 text-center text-xs font-semibold text-white transition hover:bg-zinc-700"
-                    >
-                      Open
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                        <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                      </svg>
-                    </Link>
+                    {latestCreative ? (
+                      <Link
+                        href={`/project/${p.id}/editor/${latestCreative.id}`}
+                        className="flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-center text-xs font-semibold text-white transition"
+                        style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", boxShadow: "0 2px 8px rgba(99,102,241,0.3)" }}
+                      >
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        Open editor
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/project/${p.id}/input`}
+                        className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-zinc-900 py-2 text-center text-xs font-semibold text-white transition hover:bg-zinc-700"
+                      >
+                        Start building
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                          <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                        </svg>
+                      </Link>
+                    )}
+                    {latestCreative && (
+                      <Link
+                        href={`/project/${p.id}/input`}
+                        className="flex items-center gap-1 rounded-xl border border-zinc-200 px-2.5 py-2 text-xs font-medium text-zinc-500 transition hover:border-indigo-300 hover:text-indigo-600"
+                        title="New creative"
+                      >
+                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                          <line x1="5.5" y1="1" x2="5.5" y2="10" /><line x1="1" y1="5.5" x2="10" y2="5.5" />
+                        </svg>
+                        New
+                      </Link>
+                    )}
                     <button
                       onClick={() => startRename(p)}
                       className="rounded-xl border border-zinc-200 p-2 text-zinc-400 transition hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-700"
@@ -292,6 +364,36 @@ export function Dashboard() {
                       </svg>
                     </button>
                   </div>
+
+                  {/* Multiple creatives strip */}
+                  {creatives.length > 1 && (
+                    <div className="mt-3 border-t border-zinc-100 pt-3">
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">All creatives</p>
+                      <div className="flex gap-2 overflow-x-auto pb-1">
+                        {creatives.map((c) => (
+                          <Link
+                            key={c.id}
+                            href={`/project/${p.id}/editor/${c.id}`}
+                            className="shrink-0"
+                            title={c.template_key}
+                          >
+                            {c.thumbnail_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={c.thumbnail_url}
+                                alt={c.template_key}
+                                className="h-14 w-14 rounded-lg border border-zinc-200 object-cover shadow-sm transition hover:border-indigo-400 hover:shadow-md"
+                              />
+                            ) : (
+                              <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-100 text-[9px] font-medium text-zinc-400">
+                                {c.template_key.slice(0, 8)}
+                              </div>
+                            )}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             );
