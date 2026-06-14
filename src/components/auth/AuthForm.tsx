@@ -135,39 +135,28 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               </div>
             </div>
 
-            {/* Stats */}
-            <div className="mt-8 flex items-center gap-6">
-              <div>
-                <p className="text-2xl font-bold text-white">500<span className="text-indigo-400">+</span></p>
-                <p className="text-xs text-zinc-500 mt-0.5">Teams using AdForge</p>
-              </div>
-              <div className="h-10 w-px bg-white/10" />
-              <div>
-                <p className="text-2xl font-bold text-white">10k<span className="text-indigo-400">+</span></p>
-                <p className="text-xs text-zinc-500 mt-0.5">Ads created</p>
-              </div>
-              <div className="h-10 w-px bg-white/10" />
-              <div>
-                <p className="text-2xl font-bold text-white">3<span className="text-indigo-400">min</span></p>
-                <p className="text-xs text-zinc-500 mt-0.5">Avg. time to first ad</p>
-              </div>
+            {/* Feature bullets */}
+            <div className="mt-8 flex flex-col gap-3.5">
+              {[
+                { icon: "M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z", text: "AI extracts distinct marketing angles from your business docs" },
+                { icon: "M4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5zm0 8a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6zm12 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-6z", text: "Auto-fills branded templates with precision-written ad copy" },
+                { icon: "M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4", text: "Export pixel-perfect PNG or JPEG — every layer stays editable" },
+              ].map(({ icon, text }) => (
+                <div key={text} className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-500/15 ring-1 ring-indigo-500/25">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={icon} />
+                    </svg>
+                  </div>
+                  <span className="text-sm leading-relaxed text-zinc-400">{text}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Footer */}
           <div className="border-t border-white/10 pt-5">
-            <div className="flex items-center gap-3">
-              {/* Avatar stack */}
-              <div className="flex -space-x-2">
-                {["#4f46e5","#7c3aed","#0ea5e9","#10b981"].map((c, i) => (
-                  <div key={i} className="h-7 w-7 rounded-full border-2 border-[#07071a] flex items-center justify-center text-[10px] font-bold text-white"
-                    style={{ background: c }}>
-                    {String.fromCharCode(65 + i)}
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-zinc-500">Trusted by B2B SaaS teams worldwide</p>
-            </div>
+            <p className="text-xs text-zinc-600">© 2025 AdForge · Built for B2B SaaS teams</p>
           </div>
         </div>
       </div>
