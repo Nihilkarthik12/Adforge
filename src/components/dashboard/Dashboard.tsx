@@ -12,13 +12,13 @@ import {
   type Project,
 } from "@/lib/db";
 
-const CARD_GRADIENTS = [
-  "from-blue-400 to-blue-600",
-  "from-violet-400 to-violet-600",
-  "from-emerald-400 to-emerald-600",
-  "from-orange-400 to-orange-600",
-  "from-pink-400 to-pink-600",
-  "from-cyan-400 to-cyan-600",
+const CARD_COLORS = [
+  "bg-blue-600",
+  "bg-violet-600",
+  "bg-emerald-600",
+  "bg-orange-500",
+  "bg-pink-600",
+  "bg-cyan-600",
 ];
 
 export function Dashboard() {
@@ -82,9 +82,7 @@ export function Dashboard() {
     const trimmed = renameValue.trim();
     if (trimmed) {
       setProjects(
-        (ps) =>
-          ps?.map((p) => (p.id === renamingId ? { ...p, name: trimmed } : p)) ??
-          null,
+        (ps) => ps?.map((p) => (p.id === renamingId ? { ...p, name: trimmed } : p)) ?? null,
       );
       try {
         await renameProject(renamingId, trimmed);
@@ -105,64 +103,71 @@ export function Dashboard() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Top nav */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4 shadow-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 shadow-sm">
               <span className="text-sm font-black text-white">A</span>
             </div>
-            <span className="text-lg font-bold text-slate-900">AdForge</span>
+            <span className="text-base font-bold text-slate-900 tracking-tight">AdForge</span>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-          >
-            Sign out
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowNew(true)}
+              className="hidden sm:flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition"
+            >
+              <span className="text-base leading-none">+</span> New project
+            </button>
+            <button
+              onClick={handleSignOut}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-500 hover:bg-slate-50 hover:text-slate-800 transition"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-10">
-        {/* Page header */}
-        <div className="flex items-center justify-between">
+        {/* Page title */}
+        <div className="flex items-end justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Your projects</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Projects</h1>
             <p className="mt-1 text-sm text-slate-500">
-              {projects === null
-                ? "Loading…"
-                : `${projects.length} project${projects.length !== 1 ? "s" : ""}`}
+              {projects === null ? "Loading…" : `${projects.length} project${projects.length !== 1 ? "s" : ""}`}
             </p>
           </div>
           <button
-            onClick={() => setShowNew((v) => !v)}
-            className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+            onClick={() => setShowNew(true)}
+            className="sm:hidden flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
           >
-            + New project
+            + New
           </button>
         </div>
 
         {/* New project form */}
         {showNew && (
-          <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
+          <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-5 shadow-sm">
+            <p className="mb-3 text-sm font-semibold text-slate-700">New project</p>
             <form onSubmit={handleCreate} className="flex gap-3">
               <input
                 ref={newInputRef}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Project name…"
-                className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500"
+                placeholder="e.g. Schedulr Q3 Campaign"
+                className="flex-1 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               />
               <button
                 type="submit"
                 disabled={creating}
-                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                className="rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50 transition"
               >
                 {creating ? "Creating…" : "Create"}
               </button>
               <button
                 type="button"
                 onClick={() => setShowNew(false)}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-600 hover:bg-slate-50"
               >
                 Cancel
               </button>
@@ -170,21 +175,23 @@ export function Dashboard() {
           </div>
         )}
 
-        {error && (
-          <p className="mt-4 text-sm text-red-600">{error}</p>
-        )}
+        {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
-        {/* Project grid */}
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Grid */}
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {projects?.map((p, i) => (
             <div
               key={p.id}
-              className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+              className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
             >
-              {/* Color band */}
-              <div
-                className={`h-28 bg-gradient-to-br ${CARD_GRADIENTS[i % CARD_GRADIENTS.length]}`}
-              />
+              {/* Color header */}
+              <div className={`flex h-24 items-end p-4 ${CARD_COLORS[i % CARD_COLORS.length]}`}>
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+                  <span className="text-base font-black text-white">
+                    {p.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              </div>
 
               <div className="p-4">
                 {renamingId === p.id ? (
@@ -197,55 +204,52 @@ export function Dashboard() {
                       if (e.key === "Enter") commitRename();
                       if (e.key === "Escape") setRenamingId(null);
                     }}
-                    className="w-full rounded border border-blue-400 px-2 py-0.5 text-sm font-semibold text-slate-900 outline-none"
+                    className="w-full rounded-md border border-blue-400 px-2 py-1 text-sm font-semibold text-slate-900 outline-none"
                   />
                 ) : (
-                  <Link
-                    href={`/project/${p.id}/input`}
-                    className="block text-sm font-semibold text-slate-900 hover:text-blue-600"
-                  >
-                    {p.name}
-                  </Link>
+                  <p className="text-sm font-semibold text-slate-900 leading-snug">{p.name}</p>
                 )}
                 <p className="mt-1 text-xs text-slate-400">
-                  {new Date(p.created_at).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  Created {new Date(p.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </p>
 
-                <div className="mt-4 flex gap-2">
+                <div className="mt-4 flex items-center gap-2">
                   <Link
                     href={`/project/${p.id}/input`}
-                    className="flex-1 rounded-lg bg-blue-50 py-1.5 text-center text-xs font-semibold text-blue-700 hover:bg-blue-100"
+                    className="flex-1 rounded-lg bg-slate-900 py-2 text-center text-xs font-semibold text-white hover:bg-slate-700 transition"
                   >
-                    Open
+                    Open →
                   </Link>
                   <button
                     onClick={() => startRename(p)}
-                    className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                    className="rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition"
                   >
                     Rename
                   </button>
                   <button
                     onClick={() => handleDelete(p.id)}
-                    className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-500 hover:bg-red-50 hover:text-red-600"
+                    className="rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-400 hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition"
                   >
-                    Delete
+                    ✕
                   </button>
                 </div>
               </div>
             </div>
           ))}
 
+          {/* Empty state */}
           {projects?.length === 0 && (
             <button
               onClick={() => setShowNew(true)}
-              className="flex h-48 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-white text-slate-400 transition hover:border-blue-400 hover:text-blue-500"
+              className="col-span-full flex h-52 flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-slate-300 bg-white text-slate-400 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-500"
             >
-              <span className="text-3xl font-light">+</span>
-              <span className="text-sm font-medium">Create your first project</span>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-dashed border-current">
+                <span className="text-2xl font-light">+</span>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-semibold">Create your first project</p>
+                <p className="text-xs mt-0.5">Paste your business info and let AI do the rest</p>
+              </div>
             </button>
           )}
         </div>

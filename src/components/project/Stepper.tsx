@@ -1,98 +1,68 @@
-// Top stepper for orientation through the project flow (spec §9).
-// Input → Angle → Brand → Template → Edit.
-
 import Link from "next/link";
 
 export type Step = "input" | "angles" | "brand" | "templates" | "editor";
 
-const STEPS: { key: Step; label: string; href?: (id: string) => string }[] = [
-  { key: "input", label: "Input", href: (id) => `/project/${id}/input` },
-  { key: "angles", label: "Angle", href: (id) => `/project/${id}/angles` },
-  { key: "brand", label: "Brand", href: (id) => `/project/${id}/brand` },
-  { key: "templates", label: "Template", href: (id) => `/project/${id}/templates` },
-  { key: "editor", label: "Edit" },
+const STEPS: { key: Step; label: string; icon: string; href?: (id: string) => string }[] = [
+  { key: "input",     label: "Input",    icon: "1", href: (id) => `/project/${id}/input` },
+  { key: "angles",    label: "Angles",   icon: "2", href: (id) => `/project/${id}/angles` },
+  { key: "brand",     label: "Brand",    icon: "3", href: (id) => `/project/${id}/brand` },
+  { key: "templates", label: "Template", icon: "4", href: (id) => `/project/${id}/templates` },
+  { key: "editor",    label: "Editor",   icon: "5" },
 ];
 
-export function Stepper({
-  current,
-  projectId,
-}: {
-  current: Step;
-  projectId: string;
-}) {
+export function Stepper({ current, projectId }: { current: Step; projectId: string }) {
   const currentIdx = STEPS.findIndex((s) => s.key === current);
 
   return (
-    <div className="flex items-center gap-3">
-      {/* Logo back link */}
-      <Link
-        href="/"
-        className="mr-4 flex items-center gap-2 shrink-0"
-      >
+    <div className="flex items-center justify-between w-full">
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-2 shrink-0 mr-6">
         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600">
           <span className="text-xs font-black text-white">A</span>
         </div>
-        <span className="text-sm font-bold text-slate-700">AdForge</span>
+        <span className="text-sm font-bold text-slate-800 tracking-tight hidden sm:block">AdForge</span>
       </Link>
 
-      {STEPS.map((step, i) => {
-        const done = i < currentIdx;
-        const active = i === currentIdx;
+      {/* Steps */}
+      <div className="flex items-center gap-0 flex-1">
+        {STEPS.map((step, i) => {
+          const done   = i < currentIdx;
+          const active = i === currentIdx;
 
-        const circle = (
-          <div
-            className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors ${
-              done
-                ? "bg-blue-600 text-white"
-                : active
-                  ? "border-2 border-blue-600 bg-white text-blue-600"
-                  : "border-2 border-slate-300 bg-white text-slate-400"
-            }`}
-          >
-            {done ? "✓" : i + 1}
-          </div>
-        );
-
-        const labelEl = (
-          <span
-            className={`hidden text-xs font-medium sm:block ${
+          const pill = (
+            <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
               active
-                ? "text-blue-600"
+                ? "bg-blue-600 text-white shadow-sm"
                 : done
-                  ? "text-slate-600"
+                  ? "text-slate-500"
                   : "text-slate-400"
-            }`}
-          >
-            {step.label}
-          </span>
-        );
+            }`}>
+              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
+                done
+                  ? "bg-blue-100 text-blue-600"
+                  : active
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-200 text-slate-400"
+              }`}>
+                {done ? "✓" : step.icon}
+              </span>
+              <span className="hidden sm:block">{step.label}</span>
+            </div>
+          );
 
-        return (
-          <div key={step.key} className="flex items-center gap-3">
-            <div className="flex flex-col items-center gap-0.5">
+          return (
+            <div key={step.key} className="flex items-center">
               {step.href && (done || active) ? (
-                <Link href={step.href(projectId)} className="flex flex-col items-center gap-0.5">
-                  {circle}
-                  {labelEl}
-                </Link>
-              ) : (
-                <>
-                  {circle}
-                  {labelEl}
-                </>
+                <Link href={step.href(projectId)}>{pill}</Link>
+              ) : pill}
+
+              {i < STEPS.length - 1 && (
+                <div className={`w-6 h-px mx-1 ${i < currentIdx ? "bg-blue-300" : "bg-slate-200"}`} />
               )}
             </div>
-
-            {i < STEPS.length - 1 && (
-              <div
-                className={`h-0.5 w-8 rounded-full transition-colors ${
-                  i < currentIdx ? "bg-blue-600" : "bg-slate-200"
-                }`}
-              />
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
