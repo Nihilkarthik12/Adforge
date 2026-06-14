@@ -103,24 +103,45 @@ export function TemplatesScreen({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7]">
-      <header className="border-b border-zinc-200 bg-white/90 backdrop-blur-md px-6 py-3.5 shadow-sm">
-        <Stepper current="templates" projectId={projectId} />
-      </header>
+    <div className="min-h-screen" style={{ background: "#f4f4f8" }}>
+      <Stepper current="templates" projectId={projectId} />
 
       <main className="mx-auto max-w-5xl px-6 py-10">
-        <div className="mb-8">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-indigo-500">Step 4 of 5</p>
-          <h1 className="text-2xl font-bold text-zinc-900">Pick a template</h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            Opens in the editor pre-filled with your copy and brand kit — change anything you like.
-          </p>
+
+        {/* Step hero */}
+        <div
+          className="mb-8 flex items-center gap-5 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6"
+          style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.06)", animation: "fadeInUp 0.6s ease-out" }}
+        >
+          <div
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl"
+            style={{
+              background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+              boxShadow: "0 4px 16px rgba(99,102,241,0.35)",
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5zm0 8a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6zm12 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-6z" />
+            </svg>
+          </div>
+          <div>
+            <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-indigo-500">Step 4 of 5</p>
+            <h1 className="text-xl font-bold text-zinc-900">Pick a template</h1>
+            <p className="mt-0.5 text-sm text-zinc-500">
+              Opens in the editor pre-filled with your copy and brand kit — change anything you like.
+            </p>
+          </div>
         </div>
 
         {/* Saved creatives */}
         {saved.length > 0 && (
-          <div className="mb-8 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <div
+            className="mb-6 relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.05)", animation: "fadeInUp 0.5s ease-out 0.05s backwards" }}
+          >
+            <div className="absolute inset-y-0 left-0 w-1 rounded-l-2xl"
+              style={{ background: "linear-gradient(to bottom, #4f46e5, #7c3aed)" }} />
+            <p className="mb-3 pl-1 text-xs font-bold uppercase tracking-widest text-zinc-400">
               Saved creatives
             </p>
             <div className="flex flex-wrap gap-2.5">
@@ -128,11 +149,11 @@ export function TemplatesScreen({ projectId }: { projectId: string }) {
                 <Link
                   key={c.id}
                   href={`/project/${projectId}/editor/${c.id}`}
-                  className="flex items-center gap-2.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700"
+                  className="flex items-center gap-2.5 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 hover:shadow-sm"
                 >
                   {c.thumbnail_url && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={c.thumbnail_url} alt="" className="h-8 w-8 rounded object-cover" />
+                    <img src={c.thumbnail_url} alt="" className="h-8 w-8 rounded-lg object-cover shadow-sm" />
                   )}
                   <span>
                     {c.template_key}
@@ -147,35 +168,51 @@ export function TemplatesScreen({ projectId }: { projectId: string }) {
         )}
 
         {!hasDraft && (
-          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            No generated copy found for this session. Pick a template to use defaults, or{" "}
-            <button
-              onClick={() => router.push(`/project/${projectId}/angles`)}
-              className="font-semibold underline"
-            >
-              go back to choose an angle
-            </button>{" "}
-            first.
+          <div
+            className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+            style={{ animation: "fadeInUp 0.4s ease-out" }}
+          >
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span>
+              No generated copy found for this session. Pick a template to use defaults, or{" "}
+              <button onClick={() => router.push(`/project/${projectId}/angles`)} className="font-semibold underline">
+                go back to choose an angle
+              </button>{" "}
+              first.
+            </span>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            style={{ animation: "scaleIn 0.3s ease-out" }}>
+            <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
             {error}
           </div>
         )}
 
         {/* Category tabs */}
-        <div className="mb-6 flex flex-wrap gap-1.5">
+        <div
+          className="mb-6 flex flex-wrap gap-1.5"
+          style={{ animation: "fadeInUp 0.5s ease-out 0.1s backwards" }}
+        >
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
+              className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${
                 activeCategory === cat
-                  ? "bg-indigo-600 text-white shadow-sm"
+                  ? "text-white shadow-sm shadow-indigo-500/30"
                   : "border border-zinc-200 bg-white text-zinc-600 hover:border-indigo-300 hover:text-indigo-700"
               }`}
+              style={activeCategory === cat
+                ? { background: "linear-gradient(135deg, #4f46e5, #7c3aed)" }
+                : {}
+              }
             >
               {CATEGORY_LABELS[cat] ?? cat}
             </button>
@@ -184,14 +221,18 @@ export function TemplatesScreen({ projectId }: { projectId: string }) {
 
         {/* Template grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((template) => (
+          {filtered.map((template, i) => (
             <button
               key={template.key}
               onClick={() => pickTemplate(template)}
               disabled={pendingKey !== null}
-              className="group flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-3 text-left shadow-sm transition-all hover:border-indigo-300 hover:shadow-md hover:-translate-y-0.5 disabled:opacity-60"
+              className="group flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-3 text-left transition-all hover:border-indigo-300 hover:shadow-lg hover:-translate-y-1 disabled:opacity-60"
+              style={{
+                boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
+                animation: `fadeInUp 0.4s ease-out ${0.12 + i * 0.04}s backwards`,
+              }}
             >
-              <div className="pointer-events-none overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50">
+              <div className="pointer-events-none overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50 transition-transform duration-300 group-hover:scale-[0.99]">
                 <CreativeCanvas
                   state={templateToState(template)}
                   interactive={false}
@@ -207,8 +248,9 @@ export function TemplatesScreen({ projectId }: { projectId: string }) {
                 </div>
                 <span className="shrink-0 text-xs font-semibold text-indigo-600">
                   {pendingKey === template.key ? (
-                    <span className="flex items-center gap-1">
-                      <span className="h-3 w-3 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+                    <span className="flex items-center gap-1.5 text-zinc-400">
+                      <span className="h-3 w-3 rounded-full border-2 border-indigo-500 border-t-transparent"
+                        style={{ animation: "spin 0.8s linear infinite" }} />
                       Opening…
                     </span>
                   ) : (
