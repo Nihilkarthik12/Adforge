@@ -2,12 +2,16 @@ import Link from "next/link";
 
 export type Step = "input" | "angles" | "brand" | "templates" | "editor";
 
-const STEPS: { key: Step; label: string; icon: string; href?: (id: string) => string }[] = [
-  { key: "input",     label: "Input",    icon: "1", href: (id) => `/project/${id}/input` },
-  { key: "angles",    label: "Angles",   icon: "2", href: (id) => `/project/${id}/angles` },
-  { key: "brand",     label: "Brand",    icon: "3", href: (id) => `/project/${id}/brand` },
-  { key: "templates", label: "Template", icon: "4", href: (id) => `/project/${id}/templates` },
-  { key: "editor",    label: "Editor",   icon: "5" },
+const STEPS: {
+  key: Step;
+  label: string;
+  href?: (id: string) => string;
+}[] = [
+  { key: "input",     label: "Input",    href: (id) => `/project/${id}/input` },
+  { key: "angles",    label: "Angles",   href: (id) => `/project/${id}/angles` },
+  { key: "brand",     label: "Brand",    href: (id) => `/project/${id}/brand` },
+  { key: "templates", label: "Template", href: (id) => `/project/${id}/templates` },
+  { key: "editor",    label: "Editor" },
 ];
 
 export function Stepper({ current, projectId }: { current: Step; projectId: string }) {
@@ -16,11 +20,13 @@ export function Stepper({ current, projectId }: { current: Step; projectId: stri
   return (
     <div className="flex items-center justify-between w-full">
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 shrink-0 mr-6">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600">
-          <span className="text-xs font-black text-white">A</span>
+      <Link href="/" className="flex items-center gap-2 shrink-0 mr-8">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="white" />
+          </svg>
         </div>
-        <span className="text-sm font-bold text-slate-800 tracking-tight hidden sm:block">AdForge</span>
+        <span className="hidden text-sm font-semibold text-zinc-800 tracking-tight sm:block">AdForge</span>
       </Link>
 
       {/* Steps */}
@@ -29,22 +35,28 @@ export function Stepper({ current, projectId }: { current: Step; projectId: stri
           const done   = i < currentIdx;
           const active = i === currentIdx;
 
-          const pill = (
-            <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
+          const node = (
+            <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-all select-none ${
               active
-                ? "bg-blue-600 text-white shadow-sm"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
                 : done
-                  ? "text-slate-500"
-                  : "text-slate-400"
+                  ? "text-zinc-500 hover:text-zinc-700"
+                  : "text-zinc-300"
             }`}>
-              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
+              <span className={`flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold ${
                 done
-                  ? "bg-blue-100 text-blue-600"
+                  ? "bg-indigo-100 text-indigo-600"
                   : active
                     ? "bg-white/20 text-white"
-                    : "bg-slate-200 text-slate-400"
+                    : "bg-zinc-100 text-zinc-400"
               }`}>
-                {done ? "✓" : step.icon}
+                {done ? (
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                    <path d="M1.5 4L3 5.5L6.5 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  i + 1
+                )}
               </span>
               <span className="hidden sm:block">{step.label}</span>
             </div>
@@ -53,11 +65,11 @@ export function Stepper({ current, projectId }: { current: Step; projectId: stri
           return (
             <div key={step.key} className="flex items-center">
               {step.href && (done || active) ? (
-                <Link href={step.href(projectId)}>{pill}</Link>
-              ) : pill}
+                <Link href={step.href(projectId)}>{node}</Link>
+              ) : node}
 
               {i < STEPS.length - 1 && (
-                <div className={`w-6 h-px mx-1 ${i < currentIdx ? "bg-blue-300" : "bg-slate-200"}`} />
+                <div className={`h-px w-5 mx-0.5 ${i < currentIdx ? "bg-indigo-300" : "bg-zinc-200"}`} />
               )}
             </div>
           );

@@ -1,8 +1,5 @@
 "use client";
 
-// The editor shell: layers panel · live canvas · properties panel + toolbar.
-// Owns the single CreativeState via useHistory (undo/redo stack).
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -27,24 +24,19 @@ interface Props {
   initialState: CreativeState;
   title?: string;
   projectId?: string;
-  onSave?: (
-    state: CreativeState,
-    thumbnailDataUrl?: string,
-  ) => Promise<void> | void;
+  onSave?: (state: CreativeState, thumbnailDataUrl?: string) => Promise<void> | void;
   onRegenerateCopy?: (field: string) => Promise<string>;
 }
 
 export function Editor({ initialState, title = "Untitled", projectId, onSave, onRegenerateCopy }: Props) {
   const router = useRouter();
-  const { state, setState, undo, redo, canUndo, canRedo } =
-    useHistory(initialState);
+  const { state, setState, undo, redo, canUndo, canRedo } = useHistory(initialState);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState<null | "save" | "png" | "jpg">(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);
 
-  const selected: Layer | null =
-    state.layers.find((l) => l.id === selectedId) ?? null;
+  const selected: Layer | null = state.layers.find((l) => l.id === selectedId) ?? null;
 
   const patchSelected = useCallback(
     (patch: Partial<Layer>) => {
@@ -70,7 +62,7 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
     [selectedId, setState],
   );
 
-  // --- Keyboard shortcuts -----------------------------------------------------
+  // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
@@ -84,21 +76,9 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
 
       const mod = e.ctrlKey || e.metaKey;
 
-      if (mod && e.key === "z" && !e.shiftKey) {
-        e.preventDefault();
-        undo();
-        return;
-      }
-      if (mod && (e.key === "y" || (e.key === "z" && e.shiftKey))) {
-        e.preventDefault();
-        redo();
-        return;
-      }
-      if (e.key === "Escape") {
-        setSelectedId(null);
-        setShowAddMenu(false);
-        return;
-      }
+      if (mod && e.key === "z" && !e.shiftKey) { e.preventDefault(); undo(); return; }
+      if (mod && (e.key === "y" || (e.key === "z" && e.shiftKey))) { e.preventDefault(); redo(); return; }
+      if (e.key === "Escape") { setSelectedId(null); setShowAddMenu(false); return; }
       if (!selectedId) return;
 
       if (e.key === "Delete" || e.key === "Backspace") {
@@ -111,11 +91,8 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
         e.preventDefault();
         setState((s) => {
           const next = duplicateLayer(s, selectedId);
-          // Select the new layer (it appears right after selectedId)
           const idx = next.layers.findIndex(
-            (l) =>
-              l.id !== selectedId &&
-              l.x === (s.layers.find((x) => x.id === selectedId)?.x ?? 0) + 20,
+            (l) => l.id !== selectedId && l.x === (s.layers.find((x) => x.id === selectedId)?.x ?? 0) + 20,
           );
           if (idx !== -1) setTimeout(() => setSelectedId(next.layers[idx].id), 0);
           return next;
@@ -123,13 +100,10 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
         return;
       }
 
-      // Arrow key nudge: 1px, or 10px with Shift
       const step = e.shiftKey ? 10 : 1;
       const arrows: Record<string, [number, number]> = {
-        ArrowLeft: [-step, 0],
-        ArrowRight: [step, 0],
-        ArrowUp: [0, -step],
-        ArrowDown: [0, step],
+        ArrowLeft: [-step, 0], ArrowRight: [step, 0],
+        ArrowUp: [0, -step],   ArrowDown: [0, step],
       };
       const delta = arrows[e.key];
       if (delta) {
@@ -145,25 +119,16 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedId, setState, undo, redo]);
 
-  // --- Add layer helpers ------------------------------------------------------
   const addText = useCallback(() => {
     const id = `text-${Date.now()}`;
     const layer: TextLayer = {
-      id,
-      type: "text",
-      x: 80,
-      y: Math.round(state.canvas.height / 3),
-      width: Math.min(600, state.canvas.width - 160),
-      height: 100,
-      rotation: 0,
-      editable: true,
-      content: "New text",
-      fontFamily: "Inter",
-      fontSize: 48,
-      fontWeight: 600,
-      color: "#111111",
-      textAlign: "left",
-      lineHeight: 1.2,
+      id, type: "text",
+      x: 80, y: Math.round(state.canvas.height / 3),
+      width: Math.min(600, state.canvas.width - 160), height: 100,
+      rotation: 0, editable: true,
+      content: "New text", fontFamily: "Inter",
+      fontSize: 48, fontWeight: 600, color: "#111111",
+      textAlign: "left", lineHeight: 1.2,
     };
     setState((s) => addLayer(s, layer));
     setSelectedId(id);
@@ -173,24 +138,16 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
   const addShape = useCallback(() => {
     const id = `shape-${Date.now()}`;
     const layer: ShapeLayer = {
-      id,
-      type: "shape",
-      x: 80,
-      y: Math.round(state.canvas.height / 3),
-      width: 300,
-      height: 100,
-      rotation: 0,
-      editable: true,
-      shape: "rectangle",
-      radius: 8,
-      fill: "#2563EB",
+      id, type: "shape",
+      x: 80, y: Math.round(state.canvas.height / 3),
+      width: 300, height: 100, rotation: 0, editable: true,
+      shape: "rectangle", radius: 8, fill: "#4f46e5",
     };
     setState((s) => addLayer(s, layer));
     setSelectedId(id);
     setShowAddMenu(false);
   }, [state.canvas.height, setState]);
 
-  // --- Export / Save ----------------------------------------------------------
   const handleExport = useCallback(
     async (format: "png" | "jpg") => {
       if (!captureRef.current) return;
@@ -198,19 +155,9 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
       try {
         const slug = title.replace(/\s+/g, "-").toLowerCase();
         if (format === "png") {
-          await exportPng(
-            captureRef.current,
-            state.canvas.width,
-            state.canvas.height,
-            `${slug}.png`,
-          );
+          await exportPng(captureRef.current, state.canvas.width, state.canvas.height, `${slug}.png`);
         } else {
-          await exportJpeg(
-            captureRef.current,
-            state.canvas.width,
-            state.canvas.height,
-            `${slug}.jpg`,
-          );
+          await exportJpeg(captureRef.current, state.canvas.width, state.canvas.height, `${slug}.jpg`);
         }
       } finally {
         setBusy(null);
@@ -225,11 +172,7 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
     try {
       let thumbnail: string | undefined;
       if (captureRef.current) {
-        thumbnail = await toPngDataUrl(
-          captureRef.current,
-          state.canvas.width,
-          state.canvas.height,
-        );
+        thumbnail = await toPngDataUrl(captureRef.current, state.canvas.width, state.canvas.height);
       }
       await onSave(state, thumbnail);
       router.push("/");
@@ -239,61 +182,82 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
   }, [onSave, state, router]);
 
   return (
-    <div className="flex h-full min-h-screen flex-col bg-slate-50">
+    <div className="flex h-full min-h-screen flex-col bg-zinc-950">
       {/* Toolbar */}
-      <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-2.5">
-        <div className="flex items-center gap-3">
-          {/* Back to dashboard */}
+      <header className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900 px-4 py-2">
+        <div className="flex items-center gap-2">
+          {/* Back */}
           <Link
             href={projectId ? `/project/${projectId}/templates` : "/"}
-            className="flex items-center gap-1 rounded px-2 py-1 text-sm text-slate-500 hover:bg-slate-100"
-            title="Back to project"
+            className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
           >
-            ← Back
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+            </svg>
+            Back
           </Link>
-          <span className="text-slate-300">|</span>
-          <span className="text-sm font-medium text-slate-700">{title}</span>
+
+          <div className="h-4 w-px bg-zinc-700" />
+
+          <span className="text-xs font-medium text-zinc-300 max-w-[160px] truncate">{title}</span>
+
+          <div className="h-4 w-px bg-zinc-700" />
 
           {/* Undo / Redo */}
-          <div className="flex gap-1">
+          <div className="flex items-center gap-0.5">
             <button
               onClick={undo}
               disabled={!canUndo || busy !== null}
               title="Undo (Ctrl+Z)"
-              className="rounded px-2 py-1 text-sm text-slate-500 hover:bg-slate-100 disabled:opacity-30"
+              className="rounded-md p-1.5 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200 disabled:opacity-30"
             >
-              ↩
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M3 7v6h6" /><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+              </svg>
             </button>
             <button
               onClick={redo}
               disabled={!canRedo || busy !== null}
               title="Redo (Ctrl+Shift+Z)"
-              className="rounded px-2 py-1 text-sm text-slate-500 hover:bg-slate-100 disabled:opacity-30"
+              className="rounded-md p-1.5 text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200 disabled:opacity-30"
             >
-              ↪
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M21 7v6h-6" /><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13" />
+              </svg>
             </button>
           </div>
 
-          {/* Add layer dropdown */}
+          <div className="h-4 w-px bg-zinc-700" />
+
+          {/* Add layer */}
           <div className="relative">
             <button
               onClick={() => setShowAddMenu((v) => !v)}
-              className="rounded-md border border-slate-300 px-2.5 py-1 text-sm text-slate-600 hover:bg-slate-50"
+              className="flex items-center gap-1.5 rounded-md border border-zinc-700 px-2.5 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-zinc-600 hover:bg-zinc-800"
             >
-              + Add
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="5" y1="1" x2="5" y2="9" /><line x1="1" y1="5" x2="9" y2="5" />
+              </svg>
+              Add
             </button>
             {showAddMenu && (
-              <div className="absolute left-0 top-full z-10 mt-1 flex flex-col rounded-md border border-slate-200 bg-white py-1 shadow-md">
+              <div className="absolute left-0 top-full z-20 mt-1 flex min-w-[140px] flex-col overflow-hidden rounded-xl border border-zinc-700 bg-zinc-800 shadow-xl">
                 <button
                   onClick={addText}
-                  className="px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-left text-xs font-medium text-zinc-200 transition hover:bg-zinc-700"
                 >
+                  <span className="flex h-5 w-5 items-center justify-center rounded bg-zinc-700 text-[11px] font-bold text-zinc-300">T</span>
                   Text layer
                 </button>
                 <button
                   onClick={addShape}
-                  className="px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                  className="flex items-center gap-2.5 px-3.5 py-2.5 text-left text-xs font-medium text-zinc-200 transition hover:bg-zinc-700"
                 >
+                  <span className="flex h-5 w-5 items-center justify-center rounded bg-zinc-700">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <rect x="1" y="1" width="8" height="8" rx="1" />
+                    </svg>
+                  </span>
                   Shape layer
                 </button>
               </div>
@@ -301,36 +265,59 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
           </div>
         </div>
 
-        <div className="flex gap-2">
+        {/* Right actions */}
+        <div className="flex items-center gap-2">
           {onSave && (
             <button
               onClick={handleSave}
               disabled={busy !== null}
-              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-800 px-3.5 py-1.5 text-xs font-semibold text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-700 disabled:opacity-50"
             >
+              {busy === "save" ? (
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-400 border-t-transparent" />
+              ) : (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                  <polyline points="17 21 17 13 7 13 7 21" />
+                  <polyline points="7 3 7 8 15 8" />
+                </svg>
+              )}
               {busy === "save" ? "Saving…" : "Save & Exit"}
             </button>
           )}
-          <button
-            onClick={() => handleExport("png")}
-            disabled={busy !== null}
-            className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {busy === "png" ? "Exporting…" : "Export PNG"}
-          </button>
-          <button
-            onClick={() => handleExport("jpg")}
-            disabled={busy !== null}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-50"
-          >
-            {busy === "jpg" ? "Exporting…" : "JPEG"}
-          </button>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => handleExport("png")}
+              disabled={busy !== null}
+              className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {busy === "png" ? (
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              ) : (
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              )}
+              {busy === "png" ? "Exporting…" : "Export PNG"}
+            </button>
+            <button
+              onClick={() => handleExport("jpg")}
+              disabled={busy !== null}
+              className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-xs font-semibold text-zinc-300 transition hover:border-zinc-600 hover:bg-zinc-700 disabled:opacity-50"
+            >
+              {busy === "jpg" ? "…" : "JPEG"}
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Body: three columns */}
+      {/* Three-column body */}
       <div className="flex min-h-0 flex-1">
-        <aside className="w-60 shrink-0 overflow-y-auto border-r border-slate-200 bg-white">
+        {/* Layers panel */}
+        <aside className="w-56 shrink-0 overflow-y-auto border-r border-zinc-800 bg-zinc-900">
           <LayersPanel
             state={state}
             selectedId={selectedId}
@@ -346,9 +333,7 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
                 const next = duplicateLayer(s, id);
                 const src = s.layers.find((l) => l.id === id);
                 if (!src) return next;
-                const copy = next.layers.find(
-                  (l) => l.id !== id && l.x === src.x + 20 && l.y === src.y + 20,
-                );
+                const copy = next.layers.find((l) => l.id !== id && l.x === src.x + 20 && l.y === src.y + 20);
                 if (copy) setTimeout(() => setSelectedId(copy.id), 0);
                 return next;
               });
@@ -356,8 +341,14 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
           />
         </aside>
 
+        {/* Canvas area */}
         <main
           className="flex flex-1 items-center justify-center overflow-auto p-8"
+          style={{
+            background: "#0d0d10",
+            backgroundImage: "radial-gradient(circle, #27272a 1px, transparent 1px)",
+            backgroundSize: "20px 20px",
+          }}
           onClick={() => setShowAddMenu(false)}
         >
           <CreativeCanvas
@@ -370,7 +361,8 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
           />
         </main>
 
-        <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white">
+        {/* Properties panel */}
+        <aside className="w-64 shrink-0 overflow-y-auto border-l border-zinc-800 bg-zinc-900">
           <PropertiesPanel
             layer={selected}
             canvas={state.canvas}

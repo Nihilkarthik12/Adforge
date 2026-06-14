@@ -69,73 +69,88 @@ export function InputScreen({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-sm px-6 py-3.5">
+    <div className="min-h-screen bg-[#f5f5f7]">
+      <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/90 backdrop-blur-md px-6 py-3.5">
         <Stepper current="input" projectId={projectId} />
       </header>
 
       <main className="mx-auto max-w-2xl px-6 py-12">
         <div className="mb-10">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Tell us about your product</h1>
-          <p className="mt-2 text-sm text-slate-500 leading-relaxed">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-indigo-500">Step 1 of 5</p>
+          <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">Tell us about your product</h1>
+          <p className="mt-2 text-sm leading-relaxed text-zinc-500">
             We&apos;ll extract distinct marketing angles and write ad copy tailored to your business.
           </p>
         </div>
 
-        <form onSubmit={handleGenerate} className="flex flex-col gap-5">
+        <form onSubmit={handleGenerate} className="flex flex-col gap-4">
           {/* Business info */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-sm font-semibold text-slate-800">
-                Business info <span className="text-red-500">*</span>
-              </label>
-              <span className="text-xs text-slate-400">Required</span>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-start justify-between">
+              <div>
+                <label className="text-sm font-semibold text-zinc-900">
+                  Business info <span className="text-red-500">*</span>
+                </label>
+                <p className="mt-0.5 text-xs text-zinc-400">What does the product do? Who is it for? What makes it different?</p>
+              </div>
+              <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-500">Required</span>
             </div>
-            <p className="text-xs text-slate-400 mb-3">What does the product do? Who is it for? What makes it different?</p>
             <textarea
               required
               value={businessText}
               onChange={(e) => setBusinessText(e.target.value)}
               rows={7}
               placeholder="e.g. We build an AI scheduling tool for healthcare clinics that reduces no-shows by 40% through automated SMS reminders…"
-              className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+              className="w-full resize-y rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
             />
           </div>
 
           {/* Competitor text */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-sm font-semibold text-slate-800">Competitor ad text</label>
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-400">Optional</span>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-start justify-between">
+              <div>
+                <label className="text-sm font-semibold text-zinc-900">Competitor ad text</label>
+                <p className="mt-0.5 text-xs text-zinc-400">Paste competitor copy to generate stronger, differentiated angles.</p>
+              </div>
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-400">Optional</span>
             </div>
-            <p className="text-xs text-slate-400 mb-3">Paste competitor ad copy to generate stronger, differentiated angles.</p>
             <textarea
               value={competitorText}
               onChange={(e) => setCompetitorText(e.target.value)}
               rows={4}
               placeholder="Paste competitor ad copy here…"
-              className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+              className="w-full resize-y rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
             />
           </div>
 
           {/* File upload */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-sm font-semibold text-slate-800">Documents</label>
-              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-400">Optional · .txt .md .pdf</span>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-start justify-between">
+              <div>
+                <label className="text-sm font-semibold text-zinc-900">Documents</label>
+                <p className="mt-0.5 text-xs text-zinc-400">Upload pitch decks, one-pagers, or any business document.</p>
+              </div>
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-400">Optional · .txt .md .pdf</span>
             </div>
-            <p className="text-xs text-slate-400 mb-3">Upload pitch decks, one-pagers, or any business document.</p>
-            <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 py-6 text-center transition hover:border-blue-400 hover:bg-blue-50">
-              <span className="text-2xl">📎</span>
-              <span className="text-sm font-medium text-slate-600">Click to upload files</span>
-              <span className="text-xs text-slate-400">.txt, .md, .pdf supported</span>
+            <label className="flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed border-zinc-200 bg-zinc-50 py-8 text-center transition hover:border-indigo-400 hover:bg-indigo-50">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-200 text-zinc-500 transition group-hover:bg-indigo-100">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-zinc-700">Click to upload files</p>
+                <p className="mt-0.5 text-xs text-zinc-400">.txt, .md, .pdf supported</p>
+              </div>
               <input type="file" multiple accept=".txt,.md,.pdf" onChange={(e) => handleFiles(e.target.files)} className="hidden" />
             </label>
             {files.length > 0 && (
               <ul className="mt-3 flex flex-col gap-1.5">
                 {files.map((f) => (
-                  <li key={f.storage_path} className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2 text-xs text-green-700">
-                    <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                  <li key={f.storage_path} className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     {f.name}
                   </li>
                 ))}
@@ -144,20 +159,32 @@ export function InputScreen({ projectId }: { projectId: string }) {
           </div>
 
           {error && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+            <div className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {error}
+            </div>
           )}
 
           <button
             type="submit"
             disabled={busy}
-            className="flex items-center justify-center gap-2 self-start rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60"
+            className="flex items-center justify-center gap-2 self-start rounded-xl bg-indigo-600 px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60"
           >
             {busy ? (
               <>
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 Generating angles…
               </>
-            ) : "Generate angles →"}
+            ) : (
+              <>
+                Generate angles
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                </svg>
+              </>
+            )}
           </button>
         </form>
       </main>
