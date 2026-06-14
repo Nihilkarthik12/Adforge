@@ -5,6 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { CanvasDef, CreativeState, Layer } from "@/lib/creative/types";
 import type { ShapeLayer, TextLayer } from "@/lib/creative/types";
 import {
@@ -34,11 +35,11 @@ interface Props {
 }
 
 export function Editor({ initialState, title = "Untitled", projectId, onSave, onRegenerateCopy }: Props) {
+  const router = useRouter();
   const { state, setState, undo, redo, canUndo, canRedo } =
     useHistory(initialState);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState<null | "save" | "png" | "jpg">(null);
-  const [saved, setSaved] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);
 
@@ -221,7 +222,6 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
   const handleSave = useCallback(async () => {
     if (!onSave) return;
     setBusy("save");
-    setSaved(false);
     try {
       let thumbnail: string | undefined;
       if (captureRef.current) {
@@ -232,12 +232,11 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
         );
       }
       await onSave(state, thumbnail);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
+      router.push("/");
     } finally {
       setBusy(null);
     }
-  }, [onSave, state]);
+  }, [onSave, state, router]);
 
   return (
     <div className="flex h-full min-h-screen flex-col bg-slate-50">
@@ -307,13 +306,9 @@ export function Editor({ initialState, title = "Untitled", projectId, onSave, on
             <button
               onClick={handleSave}
               disabled={busy !== null}
-              className={`rounded-md border px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50 ${
-                saved
-                  ? "border-green-400 bg-green-50 text-green-700"
-                  : "border-slate-300 text-slate-700 hover:bg-slate-50"
-              }`}
+              className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50"
             >
-              {busy === "save" ? "Saving…" : saved ? "Saved ✓" : "Save"}
+              {busy === "save" ? "Saving…" : "Save & Exit"}
             </button>
           )}
           <button
